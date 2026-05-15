@@ -4,6 +4,8 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+AuditLogger auditLogger = new AuditLogger();
+
 
 if (app.Environment.IsDevelopment())
 {

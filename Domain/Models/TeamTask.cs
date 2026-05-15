@@ -14,6 +14,10 @@ class TeamTask
 
     public  TaskStatus Status {get; private set;} = TaskStatus.Backlog;
 
+
+    public event EventHandler<TaskStatusChangedArgs>? StatusChanged;
+
+
     public void Assign(string user)
     {
         if (string.IsNullOrWhiteSpace(user))
@@ -29,7 +33,19 @@ class TeamTask
         if (!newStatus.Equals(Status))
         {
             Status = newStatus;
+
+            var eventArgument = new TaskStatusChangedArgs
+            {
+                TaskId = Id,
+                OldStatus = Status,
+                NewStatus = newStatus
+            };
+
+            // have null guarding
+            StatusChanged?.Invoke(this, eventArgument);
             return;
         }
     }
+
+
 }
