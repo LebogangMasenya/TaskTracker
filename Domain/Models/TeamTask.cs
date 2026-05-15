@@ -6,7 +6,7 @@ class TeamTask
 
     public string? Description;
 
-    private string? AssignedTo;
+    public string? AssignedTo {get; private set;}
     public  string? Label => AssignedTo ?? "Unassigned"; // is reaonly because of expression-bodied syntax
 
     public bool IsOverdue => DueDate < DateTime.Now; // should handle due date is null
@@ -20,10 +20,7 @@ class TeamTask
 
     public void Assign(string user)
     {
-        if (string.IsNullOrWhiteSpace(user))
-        {
-            throw ArgumentException.ThrowIfNullOrWhiteSpace("User cannot be null or empty");
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(user, nameof(user));
 
         AssignedTo = user;
     }
