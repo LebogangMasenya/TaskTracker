@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "XlaNQxY0jjc=",
+  "dgSpecHash": "5ENhdCMS8uM=",
   "success": true,
   "projectFilePath": "/Users/lebogangmasenya/Downloads/DEV/DOTNET/TaskTracker/TaskTracker.csproj",
   "expectedPackageFiles": [
-    "/Users/lebogangmasenya/.nuget/packages/microsoft.aspnetcore.openapi/10.0.7/microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
-    "/Users/lebogangmasenya/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+    "/Users/lebogangmasenya/.nuget/packages/microsoft.aspnetcore.openapi/10.0.8/microsoft.aspnetcore.openapi.10.0.8.nupkg.sha512",
+    "/Users/lebogangmasenya/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512",
+    "/Users/lebogangmasenya/.nuget/packages/scalar.aspnetcore/2.14.14/scalar.aspnetcore.2.14.14.nupkg.sha512"
   ],
   "logs": []
 }

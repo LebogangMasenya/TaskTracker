@@ -1,8 +1,10 @@
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 // registering services as Signletons
-builder.Services.AddSingleton<AuditLogger>();
+
 builder.Services.AddSingleton<TaskStore>();
 
 builder.Services.AddSingleton<INotifier, ConsoleNotifier>();
@@ -16,13 +18,17 @@ AuditNotifier auditNotifier = new AuditNotifier();
 
 var task = new TeamTask { Title = "Fix login bug" };
 task.StatusChanged += auditNotifier.Notify;
-task.StatusChanged +=  consoleNotifier.Notify;
+task.StatusChanged += consoleNotifier.Notify;
 task.Assign("Alice");
 
+task.Transition(TaskStatus.InProgress);
+task.Transition(TaskStatus.InReview);
+task.Transition(TaskStatus.Done);
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
@@ -49,7 +55,7 @@ app.MapGet("/api/tasks/{id}", (int id, TaskStore store) =>
 }).WithDisplayName("GetTask");
 
 
-app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request, AuditLogger logger) =>
+app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
 {
     if (string.IsNullOrWhiteSpace(request.Title))
     {
@@ -60,7 +66,7 @@ app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request, AuditLogg
     {
         var createdTask = store.CreateTask(request.Title, request.Description, request.AssignedTo, request.DueDate);
 
-        createdTask.StatusChanged += logger.LogEvent;
+        createdTask.StatusChanged += AuditLogger.LogEvent;
 
         return Results.CreatedAtRoute("GetTask", new { id = createdTask.Id });
     }
@@ -76,15 +82,15 @@ app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, TaskStore
     {
         return Results.NotFound();
     }
-       
-    if(string.IsNullOrWhiteSpace(request.User))
+
+    if (string.IsNullOrWhiteSpace(request.User))
     {
-        return Results.BadRequest(new {message = "Request missing user"});
+        return Results.BadRequest(new { message = "Request missing user" });
     }
-    
+
     updateTask.Assign(request.User);
     return Results.NoContent();
-    
+
 }).WithDisplayName("UpdateTaskAssignee");
 
 
@@ -96,15 +102,15 @@ app.MapPatch("/api/tasks/{id}/status", (int id, TransitionRequest request, TaskS
     {
         return Results.NotFound();
     }
-       
-    if(string.IsNullOrWhiteSpace(request.NewStatus.ToString()))
+
+    if (string.IsNullOrWhiteSpace(request.NewStatus.ToString()))
     {
-        return Results.BadRequest(new {message = "Request missing NewStatus"});
+        return Results.BadRequest(new { message = "Request missing NewStatus" });
     }
 
-    if(updateTask.Status == request.NewStatus)
+    if (updateTask.Status == request.NewStatus)
     {
-        return Results.BadRequest(new {message = "Current status is the same as the new status."});
+        return Results.BadRequest(new { message = "Current status is the same as the new status." });
     }
 
     updateTask.Transition(request.NewStatus);
@@ -121,4 +127,3 @@ app.MapGet("/api/tasks/overdue", (TaskStore store) =>
 
 
 app.Run();
-

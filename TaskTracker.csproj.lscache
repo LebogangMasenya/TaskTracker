@@ -384,8 +384,9 @@ Services/
  System.Xml.XPath.XDocument.dll
  WindowsBase.dll
 <NUGET>/
- microsoft.aspnetcore.openapi/10.0.7/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
+ microsoft.aspnetcore.openapi/10.0.8/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
  microsoft.openapi/2.0.0/lib/net8.0/Microsoft.OpenApi.dll
+ scalar.aspnetcore/2.14.14/lib/net10.0/Scalar.AspNetCore.dll
 
 [analyzerReferences]
 <DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.7/analyzers/dotnet/cs/
@@ -413,7 +414,7 @@ Services/
 <DOTNET>/sdk/10.0.203/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
-<NUGET>/microsoft.aspnetcore.openapi/10.0.7/analyzers/dotnet/cs/Microsoft.AspNetCore.OpenApi.SourceGenerators.dll
+<NUGET>/microsoft.aspnetcore.openapi/10.0.8/analyzers/dotnet/cs/Microsoft.AspNetCore.OpenApi.SourceGenerators.dll
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/10.0.203/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
