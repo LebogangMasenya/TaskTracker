@@ -1,5 +1,5 @@
 
-class AuditNotifier : INotifier
+public class AuditNotifier : INotifier
 {
     public void Notify(object sender,TaskStatusChangedArgs args)
     {

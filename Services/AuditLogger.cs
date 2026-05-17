@@ -1,4 +1,4 @@
-static class AuditLogger
+static public class AuditLogger
 {
    static public List<string> Log = new List<string>();
 

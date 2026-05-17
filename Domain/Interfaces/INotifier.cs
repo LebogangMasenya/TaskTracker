@@ -1,5 +1,5 @@
 
-interface INotifier
+public interface INotifier
 {
     void Notify(object sender, TaskStatusChangedArgs args);
 }

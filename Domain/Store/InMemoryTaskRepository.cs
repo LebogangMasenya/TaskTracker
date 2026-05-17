@@ -1,4 +1,4 @@
-class TaskStore
+public class InMemoryTaskRepository: ITaskRepository
 {
     private List<TeamTask> teamTasks = new List<TeamTask>();
 

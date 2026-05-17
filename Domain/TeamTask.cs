@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-class TeamTask: IAssignable, ITransitionable, ISchedulable
+public class TeamTask: IAssignable, ITransitionable, ISchedulable
 {
     public  int Id { get;  init; }
 

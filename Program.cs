@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 // registering services as Signletons
 
-builder.Services.AddSingleton<TaskStore>();
 
+builder.Services.AddSingleton<ITaskRepository, InMemoryTaskRepository>();
 builder.Services.AddSingleton<INotifier, ConsoleNotifier>();
 builder.Services.AddSingleton<INotifier, AuditNotifier>();
 
@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.MapGet("/api/tasks", (TaskStore store) =>
+app.MapGet("/api/tasks", (ITaskRepository store) =>
 {
     var teamTasks = store.GetTeamTasks();
 
@@ -42,7 +42,7 @@ app.MapGet("/api/tasks", (TaskStore store) =>
 }).WithDisplayName("GetAllTasks");
 
 
-app.MapGet("/api/tasks/{id}", (int id, TaskStore store) =>
+app.MapGet("/api/tasks/{id}", (int id, ITaskRepository store) =>
 {
     var task = store.GetTeamTaskById(id);
 
@@ -52,10 +52,10 @@ app.MapGet("/api/tasks/{id}", (int id, TaskStore store) =>
     }
 
     return Results.Ok(task);
-}).WithDisplayName("GetTask");
+}).WithDisplayName("GetTask").WithName("GetTask");
+//WIthName is an internal system identifier, displayName is for human readability
 
-
-app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
+app.MapPost("/api/tasks", (ITaskRepository repo, CreateTaskRequest request) =>
 {
     if (string.IsNullOrWhiteSpace(request.Title))
     {
@@ -63,7 +63,7 @@ app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
     }
     else
     {
-        var createdTask = store.CreateTask(request.Title, request.Description, request.AssignedTo, request.DueDate);
+        var createdTask = repo.CreateTask(request.Title, request.Description, request.AssignedTo, request.DueDate);
 
         createdTask.StatusChanged += AuditLogger.LogEvent;
 
@@ -73,14 +73,14 @@ app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
 }).WithDisplayName("CreateTask");
 
 
-app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, TaskStore store) =>
+app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, ITaskRepository repo) =>
 {
     if (string.IsNullOrWhiteSpace(request.User))
     {
         return Results.BadRequest(new { message = "Request missing user" });
     }
 
-    IAssignable? entity = store.GetAssignableEntity(id);
+    IAssignable? entity = repo.GetAssignableEntity(id);
     if (entity == null)
     {
         return Results.NotFound($"No item to assign with id {id}");
@@ -91,14 +91,14 @@ app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, TaskStore
 }).WithDisplayName("UpdateTaskAssignee");
 
 
-app.MapPatch("/api/tasks/{id}/status", (int id, TransitionRequest request, TaskStore store) =>
+app.MapPatch("/api/tasks/{id}/status", (int id, TransitionRequest request, ITaskRepository repo) =>
 {
     if (string.IsNullOrWhiteSpace(request.NewStatus.ToString()))
     {
         return Results.BadRequest(new { message = "Request missing NewStatus" });
     }
 
-    ITransitionable? entity = store.GetTransitionalEntity(id);
+    ITransitionable? entity = repo.GetTransitionalEntity(id);
 
     if (entity == null)
     {
@@ -114,9 +114,9 @@ app.MapPatch("/api/tasks/{id}/status", (int id, TransitionRequest request, TaskS
     return Results.NoContent();
 }).WithDisplayName("UpdateTaskStatus");
 
-app.MapGet("/api/tasks/overdue", (TaskStore store) =>
+app.MapGet("/api/tasks/overdue", (ITaskRepository repo) =>
 {
-    var teamTasks = store.GetOverdueTasks();
+    var teamTasks = repo.GetOverdueTasks();
 
     return Results.Ok(teamTasks);
 

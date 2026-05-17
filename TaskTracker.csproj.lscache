@@ -61,11 +61,12 @@ Domain/
   IAssignable.cs
   INotifier.cs
   ISchedulable.cs
+  ITaskRepository.cs
   ITransitionable.cs
  Models/
   Request.model.cs
   TaskStatusChanged.cs
- Store/TaskStore.cs
+ Store/InMemoryTaskRepository.cs
  TeamTask.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs

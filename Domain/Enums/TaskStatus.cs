@@ -1,4 +1,4 @@
-enum TaskStatus
+public enum TaskStatus
 {
     Backlog,
     InProgress,
