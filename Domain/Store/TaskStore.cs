@@ -4,6 +4,21 @@ class TaskStore
 
     private int _nextId = 1;
 
+    public IAssignable? GetAssignableEntity(int id)
+    {
+        return teamTasks.FirstOrDefault(t => t.Id == id);
+    }
+
+    public ITransitionable? GetTransitionalEntity(int id)
+    {
+        return teamTasks.FirstOrDefault(t => t.Id == id);
+    }
+
+    public ISchedulable? GetSchedulableEntity(int id)
+    {
+        return teamTasks.FirstOrDefault(t => t.Id == id);
+    }
+    
     public TeamTask? GetTeamTaskById(int taskId)
     {
         return teamTasks.FirstOrDefault(task => task.Id == taskId);

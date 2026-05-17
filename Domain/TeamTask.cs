@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-class TeamTask
+class TeamTask: IAssignable, ITransitionable, ISchedulable
 {
     public  int Id { get;  init; }
 
@@ -16,7 +16,7 @@ class TeamTask
 
     // JsonConverter ensures this prints as "Backlog" instead of a number like 0 in  JSON response
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public TaskStatus Status {get; private set;} = TaskStatus.Backlog;
+    public TaskStatus Status {get;  set;} = TaskStatus.Backlog;
 
 
     public event EventHandler<TaskStatusChangedArgs>? StatusChanged;

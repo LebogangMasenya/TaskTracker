@@ -60,7 +60,6 @@ app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
     if (string.IsNullOrWhiteSpace(request.Title))
     {
         return Results.BadRequest(new { message = "Title  is required" });
-
     }
     else
     {
@@ -76,19 +75,17 @@ app.MapPost("/api/tasks", (TaskStore store, CreateTaskRequest request) =>
 
 app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, TaskStore store) =>
 {
-    var updateTask = store.GetTeamTasks().FirstOrDefault(task => task.Id == id);
-
-    if (updateTask == null)
-    {
-        return Results.NotFound();
-    }
-
     if (string.IsNullOrWhiteSpace(request.User))
     {
         return Results.BadRequest(new { message = "Request missing user" });
     }
 
-    updateTask.Assign(request.User);
+    IAssignable? entity = store.GetAssignableEntity(id);
+    if (entity == null)
+    {
+        return Results.NotFound($"No item to assign with id {id}");
+    }
+    entity.Assign(request.User);
     return Results.NoContent();
 
 }).WithDisplayName("UpdateTaskAssignee");
@@ -96,24 +93,24 @@ app.MapPatch("/api/tasks/{id}/assign", (int id, AssignRequest request, TaskStore
 
 app.MapPatch("/api/tasks/{id}/status", (int id, TransitionRequest request, TaskStore store) =>
 {
-    var updateTask = store.GetTeamTasks().FirstOrDefault(task => task.Id == id);
-
-    if (updateTask == null)
-    {
-        return Results.NotFound();
-    }
-
     if (string.IsNullOrWhiteSpace(request.NewStatus.ToString()))
     {
         return Results.BadRequest(new { message = "Request missing NewStatus" });
     }
 
-    if (updateTask.Status == request.NewStatus)
+    ITransitionable? entity = store.GetTransitionalEntity(id);
+
+    if (entity == null)
+    {
+        return Results.NotFound($"No item to transition with id {id}");
+    }
+
+    if (entity.Status == request.NewStatus)
     {
         return Results.BadRequest(new { message = "Current status is the same as the new status." });
     }
 
-    updateTask.Transition(request.NewStatus);
+    entity.Transition(request.NewStatus);
     return Results.NoContent();
 }).WithDisplayName("UpdateTaskStatus");
 
