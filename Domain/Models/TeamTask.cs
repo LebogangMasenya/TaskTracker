@@ -1,6 +1,6 @@
 class TeamTask
 {
-    public int Id { get; private set; } = 0; // is this still readonly`?
+    public int Id { get;  set; } = 0; // is this still readonly`?
 
     public required string Title { get; set; }
 

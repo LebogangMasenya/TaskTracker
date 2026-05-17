@@ -58,8 +58,10 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 Domain/
  Enums/TaskStatus.cs
  Models/
+  Request.model.cs
   TaskStatusChanged.cs
   TeamTask.cs
+ Store/TaskStore.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  TaskTracker.AssemblyInfo.cs
