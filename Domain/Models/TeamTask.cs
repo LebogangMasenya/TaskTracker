@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 class TeamTask
 {
     public int Id { get;  set; } = 0; // is this still readonly`?
@@ -6,12 +8,14 @@ class TeamTask
 
     public string? Description;
 
-    public string? AssignedTo {get; private set;}
+    private string? AssignedTo {get;  set;}
     public  string? Label => AssignedTo ?? "Unassigned"; // is reaonly because of expression-bodied syntax
 
-    public bool IsOverdue => DueDate < DateTime.Now; // should handle due date is null
+    public bool IsOverdue => DueDate.HasValue && DueDate < DateTime.Now; 
     public DateTime? DueDate;
 
+    // JsonConverter ensures this prints as "Backlog" instead of a number like 0 in  JSON response
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public  TaskStatus Status {get; private set;} = TaskStatus.Backlog;
 
 

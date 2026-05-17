@@ -1,35 +1,22 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-
-var app = builder.Build();
 // registering services as Signletons
 builder.Services.AddSingleton<AuditLogger>();
 builder.Services.AddSingleton<TaskStore>();
 
+builder.Services.AddSingleton<INotifier, ConsoleNotifier>();
+builder.Services.AddSingleton<INotifier, AuditNotifier>();
+
+var app = builder.Build();
 
 
-
-AuditLogger auditLogger = new AuditLogger();
+ConsoleNotifier consoleNotifier = new ConsoleNotifier();
+AuditNotifier auditNotifier = new AuditNotifier();
 
 var task = new TeamTask { Title = "Fix login bug" };
-task.StatusChanged += auditLogger.LogEvent;
-task.StatusChanged += (sender, taskEvent) =>
-{
-    var teamTask = (TeamTask)sender!;
-
-    Console.WriteLine($"[Notify]\t \"{teamTask.Title}\" is now {teamTask.Status}");
-};
-task.StatusChanged += (sender, taskEvent) =>
-{
-    if (taskEvent.NewStatus.Equals("Done"))
-    {
-        var teamTask = (TeamTask)sender!;
-        string assignee = teamTask.AssignedTo ?? "Someone";
-        Console.WriteLine($"\"{teamTask.Title}\" marked as Done by {assignee}");
-    }
-};
-
+task.StatusChanged += auditNotifier.Notify;
+task.StatusChanged +=  consoleNotifier.Notify;
 task.Assign("Alice");
 
 
