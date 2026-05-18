@@ -1,6 +1,6 @@
-static public class TaskEndpoints
+public class TaskEndpoints : IEndpoint
 {
-    static public WebApplication RegisterEndpoints(this WebApplication app)
+     public static void MapEndpoints( IEndpointRouteBuilder app)
     {
         ConsoleNotifier consoleNotifier = new ConsoleNotifier();
         AuditNotifier auditNotifier = new AuditNotifier();
@@ -95,6 +95,5 @@ static public class TaskEndpoints
 
         }).WithDisplayName("GetOverdueTasks");
 
-        return app;
     }
 }
